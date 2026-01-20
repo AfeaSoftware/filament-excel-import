@@ -2,6 +2,43 @@
 
 A powerful Excel import package for Filament that provides seamless Excel file import functionality with automatic column mapping and memory-efficient processing.
 
+## Upgrading from v3 to v4
+
+### Requirements Update
+
+Before upgrading, ensure your application meets:
+- PHP 8.2 or higher
+- Laravel 11.28 or higher
+- Filament 4.0 or higher
+
+### Upgrade Steps
+
+1. Update your composer.json:
+   ```bash
+   composer require hayderhatem/filament-excel-import:^4.0
+   ```
+
+2. Clear your application cache:
+   ```bash
+   php artisan optimize:clear
+   ```
+
+3. Test your import functionality thoroughly
+
+### Breaking Changes
+
+- **Minimum PHP version:** 8.2 (was 8.1)
+- **Minimum Laravel version:** 11.28 (was 10.0)
+- **Table filters:** Now deferred by default - users click "Apply" to filter
+- **Laravel 10 support:** Dropped (use v3.x for Laravel 10)
+
+### Maintained Compatibility
+
+The package maintains backward compatibility with your existing code:
+- File uploads use `private` visibility (v4 default)
+- All form components work as before
+- Import functionality unchanged
+
 ## Installation
 
 You can install the package via composer:
@@ -303,9 +340,9 @@ php test-runner.php
 
 ## Requirements
 
-- PHP 8.1+
-- Laravel 10+
-- Filament 3+
+- PHP 8.2+
+- Laravel 11.28+
+- Filament 4+
 - PhpSpreadsheet (automatically installed)
 
 ## Contributing

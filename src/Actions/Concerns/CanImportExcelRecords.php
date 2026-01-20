@@ -10,7 +10,9 @@ use Filament\Actions\Imports\Events\ImportStarted;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Actions\Action as NotificationAction;
@@ -113,7 +115,7 @@ trait CanImportExcelRecords
                     filled($action->getDisk()),
                     fn(FileUpload $component) => $component->disk($action->getDisk()),
                 )
-                ->afterStateUpdated(function (FileUpload $component, Component $livewire, Forms\Set $set, ?TemporaryUploadedFile $state) use ($action) {
+                ->afterStateUpdated(function (FileUpload $component, Component $livewire, Set $set, ?TemporaryUploadedFile $state) use ($action) {
                     if (! $state instanceof TemporaryUploadedFile) {
                         return;
                     }
@@ -197,11 +199,11 @@ trait CanImportExcelRecords
                 ->hiddenLabel(),
             Select::make('activeSheet')
                 ->label(__('filament-excel-import::import.sheet'))
-                ->options(fn(Forms\Get $get): array => $get('availableSheets') ?? [])
-                ->visible(fn(Forms\Get $get): bool => is_array($get('availableSheets')) && count($get('availableSheets')) > 1)
+                ->options(fn(Get $get): array => $get('availableSheets') ?? [])
+                ->visible(fn(Get $get): bool => is_array($get('availableSheets')) && count($get('availableSheets')) > 1)
                 ->reactive()
-                ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) use ($action) {
-                    $file = Arr::first((array) ($get('file') ?? []));
+                ->afterStateUpdated(function (Set $set, Get $get, $state) use ($action) {
+                    $file = Arr::first(Arr::wrap($get('file') ?? []));
                     if (! $file instanceof TemporaryUploadedFile) {
                         return;
                     }
@@ -252,8 +254,8 @@ trait CanImportExcelRecords
             Fieldset::make(__('filament-actions::import.modal.form.columns.label'))
                 ->columns(1)
                 ->inlineLabel()
-                ->schema(function (Forms\Get $get) use ($action): array {
-                    $file = Arr::first((array) ($get('file') ?? []));
+                ->schema(function (Get $get) use ($action): array {
+                    $file = Arr::first(Arr::wrap($get('file') ?? []));
                     if (! $file instanceof TemporaryUploadedFile) {
                         return [];
                     }
@@ -270,7 +272,7 @@ trait CanImportExcelRecords
                         $excelColumnOptions = array_combine($headers, $headers);
 
                         return array_map(
-                            fn(ImportColumn $column): Select => $column->getSelect()->options($excelColumnOptions),
+                            fn(ImportColumn $column): Select => $column->getSelect()->native(false)->options($excelColumnOptions),
                             $action->getImporter()::getColumns(),
                         );
                     } catch (\Throwable $e) {
@@ -279,7 +281,7 @@ trait CanImportExcelRecords
                     }
                 })
                 ->statePath('columnMap')
-                ->visible(fn(Forms\Get $get): bool => Arr::first((array) ($get('file') ?? [])) instanceof TemporaryUploadedFile),
+                ->visible(fn(Get $get): bool => Arr::first(Arr::wrap($get('file') ?? [])) instanceof TemporaryUploadedFile),
         ], $action->getImporter()::getOptionsFormComponents()));
 
         $this->action(function (ImportAction | ImportTableAction $action, array $data) {
@@ -714,7 +716,7 @@ trait CanImportExcelRecords
         ]);
 
         $this->color('gray');
-        $this->modalWidth('xl');
+        $this->modalWidth('3xl');
         $this->successNotificationTitle(__('filament-actions::import.notifications.started.title'));
         $this->model(fn(ImportAction | ImportTableAction $action): string => $action->getImporter()::getModel());
     }
@@ -1407,7 +1409,7 @@ trait CanImportExcelRecords
     /**
      * Set basic column mapping as fallback.
      */
-    protected function setBasicColumnMapping(Forms\Set $set, ImportAction | ImportTableAction $action): void
+    protected function setBasicColumnMapping(Set $set, ImportAction | ImportTableAction $action): void
     {
         $set('columnMap', []);
         $set('availableSheets', []);

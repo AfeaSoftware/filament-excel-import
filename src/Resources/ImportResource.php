@@ -321,6 +321,7 @@ class ImportResource extends Resource
                             );
                     }),
             ])
+            ->deferFilters(false)
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label(__('filament-excel-import::import.view_details')),

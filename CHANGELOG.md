@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2026-01-XX
+
+### Changed
+- **BREAKING:** Minimum PHP version is now 8.2
+- **BREAKING:** Minimum Laravel version is now 11.28
+- **BREAKING:** Updated to Filament v4 (drops Filament v3 support)
+- **BREAKING:** Dropped Laravel 10 support
+- Updated orchestra/testbench to ^9.0|^10.0
+
+### Updated
+- All dependencies updated for Filament v4 compatibility
+- Documentation updated with new requirements and migration guide
+
+### Behavioral Changes
+- Table filters now use deferred application by default (Filament v4 behavior)
+
+### Migration Guide
+See README.md for detailed upgrade instructions from v3 to v4.
+
+### Notes
+- Users on PHP 8.1 or Laravel 10 should remain on v3.x
+- All existing features continue to work without code changes
+
 ## [3.0.0] - 2025-01-06
 
 ### 🚀 BREAKING CHANGES
